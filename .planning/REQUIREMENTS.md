@@ -63,9 +63,29 @@
 
 ## Traceability
 
-| REQ-ID | Phase |
-|--------|-------|
-| SETUP-01, SETUP-02, SETUP-03 | Phase 1 |
-| INT-01 through INT-09 | Phase 1 |
-| ARCH-01 through ARCH-07 | Phase 2 |
-| QUERY-01 through QUERY-05 | Phase 3 |
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| SETUP-01 | Phase 1 | Pending |
+| SETUP-02 | Phase 1 | Pending |
+| SETUP-03 | Phase 1 | Pending |
+| INT-01 | Phase 1 | Pending |
+| INT-02 | Phase 1 | Pending |
+| INT-03 | Phase 1 | Pending |
+| INT-04 | Phase 1 | Pending |
+| INT-05 | Phase 1 | Pending |
+| INT-06 | Phase 1 | Pending |
+| INT-07 | Phase 1 | Pending |
+| INT-08 | Phase 1 | Pending |
+| INT-09 | Phase 1 | Pending |
+| ARCH-01 | Phase 2 | Pending |
+| ARCH-02 | Phase 2 | Pending |
+| ARCH-03 | Phase 2 | Pending |
+| ARCH-04 | Phase 2 | Pending |
+| ARCH-05 | Phase 2 | Pending |
+| ARCH-06 | Phase 2 | Pending |
+| ARCH-07 | Phase 2 | Pending |
+| QUERY-01 | Phase 3 | Pending |
+| QUERY-02 | Phase 3 | Pending |
+| QUERY-03 | Phase 3 | Pending |
+| QUERY-04 | Phase 3 | Pending |
+| QUERY-05 | Phase 3 | Pending |
