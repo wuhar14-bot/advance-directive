@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.62.0",
+    "openai": "^4.77.0",
     "@base-ui/react": "^1.4.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

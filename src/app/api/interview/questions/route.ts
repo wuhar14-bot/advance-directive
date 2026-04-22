@@ -1,9 +1,12 @@
-import Anthropic from '@anthropic-ai/sdk'
+import OpenAI from 'openai'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const maxDuration = 30
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+const client = new OpenAI({
+  apiKey: process.env.KIMI_API_KEY,
+  baseURL: 'https://api.moonshot.cn/v1',
+})
 
 const DOMAIN_CONTEXT: Record<string, string> = {
   "medical": "medical preferences, healthcare decisions, treatment wishes, and attitudes toward medical intervention",
@@ -21,14 +24,18 @@ export async function POST(req: NextRequest) {
       ? `\n\nNote: The interviewer has already covered these domains: ${completedDomains.join(', ')}. You may reference themes from those areas if relevant, but focus on ${domain}.`
       : ''
 
-    const message = await client.messages.create({
-      model: 'claude-haiku-4-5',
+    const completion = await client.chat.completions.create({
+      model: 'moonshot-v1-8k',
       max_tokens: 600,
       temperature: 0.4,
-      system: `You are helping an interviewer capture the values and preferences of an elderly person for an advance directive. Your role is to generate thoughtful, open-ended interview questions that invite storytelling and reflection — not yes/no answers. Questions should feel like a caring conversation, not a medical form. Generate exactly 4 questions for the specified domain.`,
-      messages: [{
-        role: 'user',
-        content: `Generate 4 interview questions for the "${domain}" domain (${DOMAIN_CONTEXT[domain] ?? domain}).
+      messages: [
+        {
+          role: 'system',
+          content: `You are helping an interviewer capture the values and preferences of an elderly person for an advance directive. Your role is to generate thoughtful, open-ended interview questions that invite storytelling and reflection — not yes/no answers. Questions should feel like a caring conversation, not a medical form. Generate exactly 4 questions for the specified domain.`
+        },
+        {
+          role: 'user',
+          content: `Generate 4 interview questions for the "${domain}" domain (${DOMAIN_CONTEXT[domain] ?? domain}).
 
 Person's profile:
 - Name: ${person.name}
@@ -39,16 +46,12 @@ Return ONLY a JSON array of objects with this exact shape:
 [{"id": "q1", "text": "..."}, {"id": "q2", "text": "..."}, {"id": "q3", "text": "..."}, {"id": "q4", "text": "..."}]
 
 No other text. No markdown. Just the JSON array.`
-      }]
+        }
+      ]
     })
 
-    const content = message.content[0]
-    if (content.type !== 'text') {
-      return NextResponse.json({ error: 'Unexpected response type' }, { status: 500 })
-    }
-
-    // Strip markdown code fences if present
-    const raw = content.text.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '')
+    const text = completion.choices[0]?.message?.content ?? ''
+    const raw = text.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '')
     const questions = JSON.parse(raw)
 
     return NextResponse.json({ questions })

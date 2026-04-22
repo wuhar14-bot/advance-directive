@@ -2,7 +2,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Foundation + Interview Flow** - Working Next.js app with session setup and full guided interview UI
+- [x] **Phase 1: Foundation + Interview Flow** - Working Next.js app with session setup and full guided interview UI (completed 2026-04-22)
 - [ ] **Phase 2: Archive Generation** - AI distills interview into structured, citable archive
 - [ ] **Phase 3: Decision Query** - Guardian queries archive and receives grounded, cited guidance
 - [ ] **Phase 4: Polish + Deploy** - Vercel deployment, UX hardening, end-to-end validation
@@ -25,10 +25,10 @@
 **UI hint**: yes
 
 Plans:
-- [ ] 01-01-PLAN.md — Project scaffold, SessionData schema, Zustand persist store
-- [ ] 01-02-PLAN.md — Session setup screen (setup form + resume-from-file + ResumeBanner)
-- [ ] 01-03-PLAN.md — Interview screen (two-panel layout, question flow, domain navigation)
-- [ ] 01-04-PLAN.md — AI integration (question generation + follow-up probes API routes)
+- [x] 01-01-PLAN.md — Project scaffold, SessionData schema, Zustand persist store
+- [x] 01-02-PLAN.md — Session setup screen (setup form + resume-from-file + ResumeBanner)
+- [x] 01-03-PLAN.md — Interview screen (two-panel layout, question flow, domain navigation)
+- [x] 01-04-PLAN.md — AI integration (question generation + follow-up probes API routes)
 
 ### Phase 2: Archive Generation
 **Goal**: Interviewer can generate a structured, read-only archive from the interview transcript
@@ -71,7 +71,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Interview Flow | 0/4 | Not started | - |
+| 1. Foundation + Interview Flow | 4/4 | Complete   | 2026-04-22 |
 | 2. Archive Generation | 0/2 | Not started | - |
 | 3. Decision Query | 0/2 | Not started | - |
 | 4. Polish + Deploy | 0/1 | Not started | - |
