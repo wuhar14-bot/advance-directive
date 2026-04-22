@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { DomainProgressGrid } from "@/components/DomainProgressGrid";
 import { QuestionCard } from "@/components/QuestionCard";
 import { ProbePanel } from "@/components/ProbePanel";
+import { Button } from "@/components/ui/button";
 import { useSessionStore } from "@/lib/store";
-import { DomainKey } from "@/lib/types";
+import { DomainKey, SessionData, Turn } from "@/lib/types";
 
 interface Question {
   id: string;
@@ -53,9 +54,12 @@ export default function InterviewPage() {
     setDomainStatus,
     setCurrentDomain,
     setCurrentQuestionIndex,
+    addFollowUpProbes,
   } = useSessionStore();
 
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [questionsLoading, setQuestionsLoading] = useState(false);
+  const [questionsError, setQuestionsError] = useState(false);
   const [probes, setProbes] = useState<string[]>([]);
   const [probesLoading, setProbesLoading] = useState(false);
   const [probesError, setProbesError] = useState(false);
@@ -66,6 +70,84 @@ export default function InterviewPage() {
       router.push("/");
     }
   }, [session, router]);
+
+  const fetchQuestionsForDomain = useCallback(
+    async (
+      domain: DomainKey,
+      person: SessionData["person"],
+      completedDomains: DomainKey[]
+    ) => {
+      setQuestionsLoading(true);
+      setQuestionsError(false);
+      try {
+        const res = await fetch("/api/interview/questions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ domain, person, completedDomains }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setQuestions(data.questions ?? []);
+      } catch {
+        setQuestionsError(true);
+        setQuestions([]);
+      } finally {
+        setQuestionsLoading(false);
+      }
+    },
+    []
+  );
+
+  const fetchProbes = useCallback(
+    async (
+      domain: DomainKey,
+      questionId: string,
+      question: string,
+      answer: string,
+      previousTurns: Turn[]
+    ) => {
+      setProbesLoading(true);
+      setProbesError(false);
+      setProbes([]);
+      try {
+        const res = await fetch("/api/interview/followup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            domain,
+            question,
+            answer,
+            previousTurns: previousTurns.slice(-3),
+          }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const fetched: string[] = data.probes ?? [];
+        setProbes(fetched);
+        if (fetched.length > 0) {
+          addFollowUpProbes(domain, questionId, fetched);
+        }
+      } catch {
+        setProbesError(true);
+      } finally {
+        setProbesLoading(false);
+      }
+    },
+    [addFollowUpProbes]
+  );
+
+  // Fetch questions when domain changes (lazy: only if no questions loaded)
+  useEffect(() => {
+    if (!session) return;
+    if (questions.length === 0 && !questionsLoading) {
+      const domain = session.currentDomain;
+      const completedDomains = (
+        Object.keys(session.domainStatus) as DomainKey[]
+      ).filter((d) => session.domainStatus[d] === "complete");
+      fetchQuestionsForDomain(domain, session.person, completedDomains);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.currentDomain]);
 
   if (!session) return null;
 
@@ -83,15 +165,21 @@ export default function InterviewPage() {
   }
 
   function handleNext() {
+    if (!currentQuestion) return;
     if (currentIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentIndex + 1);
     } else {
       setDomainStatus(currentDomain, "complete");
     }
-    // Placeholder for Plan 04 probe generation
-    setProbesLoading(true);
-    setProbesError(false);
-    setTimeout(() => setProbesLoading(false), 500);
+    // Fire probe generation async — does NOT block navigation
+    const turns = session!.transcript[currentDomain] ?? [];
+    fetchProbes(
+      currentDomain,
+      currentQuestion.id,
+      currentQuestion.text,
+      currentAnswer,
+      turns
+    );
   }
 
   function handlePrevious() {
@@ -102,6 +190,8 @@ export default function InterviewPage() {
 
   function handleSelectDomain(domain: DomainKey) {
     setCurrentDomain(domain);
+    setQuestions([]);
+    setQuestionsError(false);
     setProbes([]);
     setProbesError(false);
     setSelectedProbe("");
@@ -141,7 +231,27 @@ export default function InterviewPage() {
         {/* Main */}
         <main className="flex-1 overflow-y-auto p-8">
           <section aria-label="Current question" className="max-w-2xl">
-            {questions.length === 0 ? (
+            {questionsError ? (
+              <div className="space-y-4">
+                <p className="text-stone-500">
+                  Could not load questions. Check your connection and try again.
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() =>
+                    fetchQuestionsForDomain(
+                      session.currentDomain,
+                      session.person,
+                      (Object.keys(session.domainStatus) as DomainKey[]).filter(
+                        (d) => session.domainStatus[d] === "complete"
+                      )
+                    )
+                  }
+                >
+                  Try again
+                </Button>
+              </div>
+            ) : questionsLoading || questions.length === 0 ? (
               <LoadingSkeleton />
             ) : (
               <>
