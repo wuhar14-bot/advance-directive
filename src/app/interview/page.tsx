@@ -237,6 +237,7 @@ export default function InterviewPage() {
                   }
                 >
                   重试
+                </Button>
               </div>
             ) : questionsLoading || questions.length === 0 ? (
               <LoadingSkeleton />
