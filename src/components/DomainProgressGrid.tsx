@@ -4,11 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { DomainKey, DomainStatus } from "@/lib/types";
 
 const DOMAIN_LABELS: Record<DomainKey, string> = {
-  medical: "Medical Preferences",
-  financial: "Financial Wishes",
-  daily: "Daily Life & Comfort",
-  relationships: "Relationships & Family",
-  "end-of-life": "End-of-Life Values",
+  medical: "医疗意愿",
+  financial: "财务安排",
+  daily: "日常生活",
+  relationships: "家庭与关系",
+  "end-of-life": "临终价值观",
 };
 
 const DOMAIN_ORDER: DomainKey[] = [
@@ -30,27 +30,27 @@ function StatusBadge({ status }: { status: DomainStatus }) {
   if (status === "not-started") {
     return (
       <Badge variant="outline" className="text-stone-400 text-xs">
-        Not started
+        未开始
       </Badge>
     );
   }
   if (status === "in-progress") {
     return (
       <Badge className="bg-sky-100 text-sky-700 text-xs border-0">
-        In progress
+        进行中
       </Badge>
     );
   }
   if (status === "complete") {
     return (
       <Badge className="bg-green-50 text-green-600 text-xs border-0">
-        Complete
+        已完成
       </Badge>
     );
   }
   return (
     <Badge variant="outline" className="text-stone-400 text-xs">
-      Skipped
+      已跳过
     </Badge>
   );
 }
@@ -64,7 +64,7 @@ export function DomainProgressGrid({
   function handleSkipConfirm(domain: DomainKey) {
     const label = DOMAIN_LABELS[domain];
     const confirmed = window.confirm(
-      `Skip ${label}? You can return to it later.`
+      `跳过「${label}」？可以稍后返回继续。`
     );
     if (confirmed) {
       onSkipDomain(domain);
@@ -121,7 +121,7 @@ export function DomainProgressGrid({
           onClick={() => handleSkipConfirm(currentDomain)}
           className="text-sm text-stone-500 hover:text-red-600 mt-auto pt-4 border-t border-stone-200 w-full text-left transition-colors duration-150"
         >
-          Skip this domain
+          跳过此领域
         </button>
       )}
     </div>

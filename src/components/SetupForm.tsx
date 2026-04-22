@@ -42,7 +42,7 @@ export function SetupForm() {
     const data = await loadSessionFromFile(file);
     if (!data) {
       setFileError(
-        "This file doesn't look like a valid session. Please choose a different file."
+        "文件格式不正确，请选择有效的会话文件。"
       );
       // Reset file input so same file can be re-selected after error
       e.target.value = "";
@@ -57,7 +57,7 @@ export function SetupForm() {
       <div className="flex-1 flex items-center justify-center px-6 py-16">
         <div className="w-full max-w-lg">
           <h1 className="text-[28px] font-semibold text-stone-900 mb-8 text-center">
-            Advance Directive
+            意定监护访谈
           </h1>
 
           <Card className="p-8">
@@ -69,7 +69,7 @@ export function SetupForm() {
                     htmlFor="person-name"
                     className="text-sm font-medium text-stone-700"
                   >
-                    Person&apos;s name
+                    姓名
                   </label>
                   <input
                     id="person-name"
@@ -77,7 +77,7 @@ export function SetupForm() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full rounded-md border border-stone-200 bg-white px-3 py-2 text-base text-stone-900 placeholder:text-stone-400 outline-none focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/30 transition-[border-color,box-shadow]"
-                    placeholder="Full name"
+                    placeholder="老人姓名"
                     autoComplete="off"
                   />
                 </div>
@@ -88,7 +88,7 @@ export function SetupForm() {
                     htmlFor="person-age"
                     className="text-sm font-medium text-stone-700"
                   >
-                    Age
+                    年龄
                   </label>
                   <input
                     id="person-age"
@@ -98,7 +98,7 @@ export function SetupForm() {
                     value={age}
                     onChange={(e) => setAge(e.target.value)}
                     className="w-full rounded-md border border-stone-200 bg-white px-3 py-2 text-base text-stone-900 placeholder:text-stone-400 outline-none focus-visible:border-sky-500 focus-visible:ring-2 focus-visible:ring-sky-500/30 transition-[border-color,box-shadow]"
-                    placeholder="e.g. 78"
+                    placeholder="例如：78"
                   />
                 </div>
 
@@ -108,14 +108,14 @@ export function SetupForm() {
                     htmlFor="person-background"
                     className="text-sm font-medium text-stone-700"
                   >
-                    Brief background
+                    简要背景
                   </label>
                   <Textarea
                     id="person-background"
                     rows={4}
                     value={backgroundNotes}
                     onChange={(e) => setBackgroundNotes(e.target.value)}
-                    placeholder="A few sentences about their life, health situation, and family context. This helps personalize the questions."
+                    placeholder="简单介绍老人的生活经历、健康状况和家庭情况，帮助生成更贴切的问题。"
                     className="text-base text-stone-900 min-h-[96px]"
                   />
                 </div>
@@ -131,12 +131,12 @@ export function SetupForm() {
                     <>
                       <Loader2
                         className="w-4 h-4 animate-spin mr-2"
-                        aria-label="Loading"
+                        aria-label="加载中"
                       />
-                      Preparing interview...
+                      准备访谈中...
                     </>
                   ) : (
-                    "Begin Interview"
+                    "开始访谈"
                   )}
                 </Button>
 
@@ -147,7 +147,7 @@ export function SetupForm() {
                     onClick={handleResumeFromFile}
                     className="text-stone-500 text-sm underline hover:text-stone-700 transition-colors"
                   >
-                    Resume from file
+                    从文件恢复
                   </button>
                   {fileError && (
                     <p role="alert" className="text-red-600 text-sm mt-1 text-center">

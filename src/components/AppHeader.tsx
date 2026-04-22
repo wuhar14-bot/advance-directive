@@ -33,7 +33,7 @@ function AutoSaveIndicator() {
       aria-label="Auto-save status"
       className={`text-sm text-green-600 transition-opacity duration-300 ${faded ? "opacity-50" : "opacity-100"}`}
     >
-      Saved · {time}
+      已保存 · {time}
     </span>
   );
 }
@@ -43,7 +43,7 @@ export function AppHeader({ personName }: AppHeaderProps) {
 
   function handleExport() {
     if (!session) {
-      alert("Nothing to export yet. Complete at least one answer first.");
+      alert("暂无内容可导出，请先完成至少一个问题的回答。");
       return;
     }
     exportSessionToFile(session);
@@ -53,7 +53,7 @@ export function AppHeader({ personName }: AppHeaderProps) {
     <header className="h-14 bg-white border-b border-stone-200 flex items-center px-6 shrink-0">
       {/* Left: app name */}
       <span className="text-sm font-semibold text-stone-700">
-        Advance Directive
+        意定监护访谈
       </span>
 
       {/* Center: person name */}
@@ -67,7 +67,7 @@ export function AppHeader({ personName }: AppHeaderProps) {
       <div className="flex items-center gap-4">
         <AutoSaveIndicator />
         <Button variant="outline" onClick={handleExport} className="text-sm">
-          Export session
+          导出会话
         </Button>
       </div>
     </header>

@@ -22,24 +22,24 @@ export async function POST(req: NextRequest) {
       : ''
 
     const completion = await client.chat.completions.create({
-      model: 'moonshot-v1-8k',
+      model: 'kimi-k2.6',
       max_tokens: 250,
       temperature: 0.4,
       messages: [
         {
           role: 'system',
-          content: `You are a skilled interviewer helping capture an elderly person's values for an advance directive. After each answer, suggest 1-2 brief follow-up probes that would surface deeper values or clarify ambiguity. Probes should feel natural in conversation — not clinical. Keep each probe under 20 words.`
+          content: `你是一位帮助记录老人意愿的专业访谈助手，用于制作意定监护档案。每次老人回答后，建议1-2个简短的追问，帮助挖掘更深层的价值观或澄清模糊之处。追问应自然流畅，像家人聊天，不要像临床问卷。每个追问不超过20个字，用中文回答。`
         },
         {
           role: 'user',
-          content: `Domain: ${domain}
-Question asked: ${question}
-Answer given: ${answer}${turnContext}
+          content: `领域：${domain}
+提问：${question}
+老人的回答：${answer}${turnContext}
 
-Suggest 1-2 follow-up probes. Return ONLY a JSON array of strings:
-["probe 1", "probe 2"]
+建议1-2个追问。只返回JSON字符串数组：
+["追问1", "追问2"]
 
-No other text. No markdown. Just the JSON array.`
+不要其他文字，不要markdown，只返回JSON数组。`
         }
       ]
     })

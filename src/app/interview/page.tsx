@@ -222,7 +222,7 @@ export default function InterviewPage() {
             {questionsError ? (
               <div className="space-y-4">
                 <p className="text-stone-500">
-                  Could not load questions. Check your connection and try again.
+                  无法加载问题，请检查网络后重试。
                 </p>
                 <Button
                   variant="outline"
@@ -236,8 +236,7 @@ export default function InterviewPage() {
                     )
                   }
                 >
-                  Try again
-                </Button>
+                  重试
               </div>
             ) : questionsLoading || questions.length === 0 ? (
               <LoadingSkeleton />

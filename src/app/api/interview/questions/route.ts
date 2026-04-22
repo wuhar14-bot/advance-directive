@@ -9,11 +9,11 @@ const client = new OpenAI({
 })
 
 const DOMAIN_CONTEXT: Record<string, string> = {
-  "medical": "medical preferences, healthcare decisions, treatment wishes, and attitudes toward medical intervention",
-  "financial": "financial wishes, asset distribution preferences, and attitudes toward financial support and independence",
-  "daily": "daily life preferences, comfort, routines, living arrangements, and quality of life priorities",
-  "relationships": "family relationships, social connections, important people, and how they want to be remembered",
-  "end-of-life": "end-of-life values, attitudes toward death and dying, legacy, and final wishes",
+  "medical": "医疗偏好、医疗决策、治疗意愿、对医疗干预的态度",
+  "financial": "财务意愿、资产分配偏好、对经济支持和独立性的态度",
+  "daily": "日常生活偏好、舒适度、生活习惯、居住安排、生活质量优先级",
+  "relationships": "家庭关系、社会联系、重要的人、希望被如何记住",
+  "end-of-life": "临终价值观、对死亡和临终的态度、遗产、最后的心愿",
 }
 
 export async function POST(req: NextRequest) {
@@ -25,27 +25,27 @@ export async function POST(req: NextRequest) {
       : ''
 
     const completion = await client.chat.completions.create({
-      model: 'moonshot-v1-8k',
+      model: 'kimi-k2.6',
       max_tokens: 600,
       temperature: 0.4,
       messages: [
         {
           role: 'system',
-          content: `You are helping an interviewer capture the values and preferences of an elderly person for an advance directive. Your role is to generate thoughtful, open-ended interview questions that invite storytelling and reflection — not yes/no answers. Questions should feel like a caring conversation, not a medical form. Generate exactly 4 questions for the specified domain.`
+          content: `你是一位帮助采访者记录老人价值观和意愿的专业访谈助手，用于制作意定监护档案。你的任务是生成温暖、开放式的访谈问题，引导老人讲述故事和表达想法——不要是非题。问题应像关心的家人在聊天，而不是医疗表格。请为指定领域生成恰好4个问题，用中文回答。`
         },
         {
           role: 'user',
-          content: `Generate 4 interview questions for the "${domain}" domain (${DOMAIN_CONTEXT[domain] ?? domain}).
+          content: `为"${domain}"领域（${DOMAIN_CONTEXT[domain] ?? domain}）生成4个访谈问题。
 
-Person's profile:
-- Name: ${person.name}
-- Age: ${person.age}
-- Background: ${person.backgroundNotes}${completedContext}
+受访者信息：
+- 姓名：${person.name}
+- 年龄：${person.age}
+- 背景：${person.backgroundNotes}${completedContext}
 
-Return ONLY a JSON array of objects with this exact shape:
+只返回JSON数组，格式如下：
 [{"id": "q1", "text": "..."}, {"id": "q2", "text": "..."}, {"id": "q3", "text": "..."}, {"id": "q4", "text": "..."}]
 
-No other text. No markdown. Just the JSON array.`
+不要其他文字，不要markdown，只返回JSON数组。`
         }
       ]
     })

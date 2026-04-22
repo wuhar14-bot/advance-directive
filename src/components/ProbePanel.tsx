@@ -39,17 +39,17 @@ export function ProbePanel({
       defaultValue={probes.length > 0 ? "probes" : undefined}
     >
       <AccordionItem value="probes">
-        <AccordionTrigger>Suggested follow-ups</AccordionTrigger>
+        <AccordionTrigger>建议追问</AccordionTrigger>
         <AccordionContent>
           {isLoading && (
             <p className="text-sm text-stone-400">
               <Loader2 className="inline w-3 h-3 animate-spin mr-1" />
-              Generating suggestions…
+              生成建议中…
             </p>
           )}
 
           {hasError && !isLoading && (
-            <p className="text-sm text-stone-400">Suggestions unavailable</p>
+            <p className="text-sm text-stone-400">暂时无法生成建议</p>
           )}
 
           {!isLoading && !hasError && probes.length > 0 && (
@@ -60,7 +60,7 @@ export function ProbePanel({
                   <button
                     key={probe}
                     role="button"
-                    aria-label={`Use follow-up: ${probe}`}
+                    aria-label={`使用追问：${probe}`}
                     onClick={() => handleProbeClick(probe)}
                     className={[
                       "inline-flex items-center px-3 py-1 rounded-full text-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2",
@@ -78,17 +78,17 @@ export function ProbePanel({
 
           {!isLoading && !hasError && probes.length === 0 && (
             <p className="text-sm text-stone-400">
-              No suggestions yet. Answer a question to generate follow-ups.
+              回答问题后将自动生成追问建议。
             </p>
           )}
 
           <div className="mt-3">
             <label className="text-sm text-stone-500 mb-1 block">
-              Follow-up note
+              追问提示
             </label>
             <Textarea
               readOnly
-              placeholder="Click a suggestion above, or type your own follow-up prompt"
+              placeholder="点击上方建议，或自行输入追问内容"
               className="text-sm"
               value={selectedProbe}
             />

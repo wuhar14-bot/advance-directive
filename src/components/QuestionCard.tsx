@@ -56,17 +56,17 @@ export function QuestionCard({
         </p>
 
         <Textarea
-          aria-label="Answer"
+          aria-label="回答"
           aria-describedby="question-text"
           value={answer}
           onChange={(e) => handleAnswerChange(e.target.value)}
-          placeholder="Type the person's answer here…"
+          placeholder="在此输入老人的回答…"
           className="min-h-[120px] text-base"
         />
 
         {showEmptyError && (
           <p role="alert" className="text-red-500 text-sm mt-1">
-            Please enter an answer before continuing
+            请先输入回答再继续
           </p>
         )}
 
@@ -76,7 +76,7 @@ export function QuestionCard({
             onClick={onPrevious}
             disabled={!hasPrevious}
           >
-            Previous
+            上一题
           </Button>
           <Button
             onClick={handleNext}
@@ -87,12 +87,12 @@ export function QuestionCard({
             {isLoadingNext ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                Saving...
+                保存中...
               </>
             ) : hasNext ? (
-              "Next Question"
+              "下一题"
             ) : (
-              "Finish Domain"
+              "完成此领域"
             )}
           </Button>
         </div>
