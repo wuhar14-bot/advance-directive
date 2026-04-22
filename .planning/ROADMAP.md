@@ -21,8 +21,14 @@
   3. Domain progress grid shows which of the 5 domains are not-started, in-progress, or complete
   4. After submitting an answer, AI suggests 1-2 follow-up probes in a collapsible panel
   5. Interviewer can skip a domain or navigate back to a previous question without losing saved answers
-**Plans**: TBD
+**Plans**: 4 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 01-01-PLAN.md — Project scaffold, SessionData schema, Zustand persist store
+- [ ] 01-02-PLAN.md — Session setup screen (setup form + resume-from-file + ResumeBanner)
+- [ ] 01-03-PLAN.md — Interview screen (two-panel layout, question flow, domain navigation)
+- [ ] 01-04-PLAN.md — AI integration (question generation + follow-up probes API routes)
 
 ### Phase 2: Archive Generation
 **Goal**: Interviewer can generate a structured, read-only archive from the interview transcript
@@ -65,7 +71,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Interview Flow | 0/3 | Not started | - |
+| 1. Foundation + Interview Flow | 0/4 | Not started | - |
 | 2. Archive Generation | 0/2 | Not started | - |
 | 3. Decision Query | 0/2 | Not started | - |
 | 4. Polish + Deploy | 0/1 | Not started | - |
