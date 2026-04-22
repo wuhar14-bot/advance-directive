@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>产品设计文档 — AI 意愿档案系统</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f8fafc; color: #1e293b; padding: 40px 24px; line-height: 1.7; }
+.container { max-width: 800px; margin: 0 auto; }
+
+/* Header */
+.doc-header { margin-bottom: 48px; padding-bottom: 24px; border-bottom: 2px solid #e2e8f0; }
+.doc-title { font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+.doc-meta { font-size: 13px; color: #94a3b8; }
+.doc-tagline { font-size: 15px; color: #3b82f6; margin-top: 10px; font-style: italic; }
+
+/* Section */
+.section { margin-bottom: 44px; }
+.section-title { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9; }
+
+/* Principle box */
+.principle { background: #0f172a; color: #f8fafc; border-radius: 12px; padding: 24px 28px; margin-bottom: 20px; }
+.principle-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #60a5fa; text-transform: uppercase; margin-bottom: 10px; }
+.principle-text { font-size: 18px; font-weight: 600; line-height: 1.6; }
+.principle-sub { font-size: 13px; color: #94a3b8; margin-top: 10px; line-height: 1.6; }
+
+/* Inference chain */
+.chain { display: flex; flex-direction: column; gap: 0; }
+.chain-item { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+.chain-item:last-child { border-bottom: none; }
+.chain-num { font-size: 11px; font-weight: 700; color: #3b82f6; background: #eff6ff; border-radius: 4px; padding: 2px 7px; flex-shrink: 0; margin-top: 2px; }
+.chain-text { font-size: 14px; color: #334155; }
+.chain-text strong { color: #0f172a; }
+
+/* Role cards */
+.roles { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.role-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; }
+.role-icon { font-size: 22px; margin-bottom: 8px; }
+.role-name { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+.role-desc { font-size: 12px; color: #64748b; line-height: 1.5; }
+.role-note { font-size: 11px; color: #94a3b8; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e2e8f0; }
+
+/* Flow */
+.flow { display: flex; flex-direction: column; gap: 0; }
+.flow-step { display: flex; gap: 16px; align-items: flex-start; }
+.flow-left { display: flex; flex-direction: column; align-items: center; width: 40px; flex-shrink: 0; }
+.flow-dot { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.flow-line { width: 2px; flex: 1; min-height: 24px; background: #e2e8f0; margin: 4px 0; }
+.flow-content { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 18px; margin-bottom: 8px; flex: 1; }
+.flow-step-title { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+.flow-step-desc { font-size: 13px; color: #475569; line-height: 1.5; }
+.flow-step-detail { font-size: 12px; color: #94a3b8; margin-top: 6px; }
+
+.d1 .flow-dot { background: #fed7aa; color: #c2410c; }
+.d2 .flow-dot { background: #ddd6fe; color: #6d28d9; }
+.d3 .flow-dot { background: #3b82f6; color: #fff; }
+.d4 .flow-dot { background: #a7f3d0; color: #047857; }
+
+/* MVP table */
+.mvp-grid { display: flex; flex-direction: column; gap: 10px; }
+.mvp-row { display: flex; gap: 12px; align-items: flex-start; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; }
+.mvp-scope { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; margin-top: 2px; }
+.in { background: #dcfce7; color: #166534; }
+.out { background: #f1f5f9; color: #64748b; }
+.later { background: #fef3c7; color: #92400e; }
+.mvp-text { font-size: 13px; color: #334155; line-height: 1.5; }
+
+/* Biz paths */
+.biz { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.biz-card { border-radius: 12px; padding: 20px; }
+.biz-b2c { background: #eff6ff; border: 1px solid #bfdbfe; }
+.biz-b2b { background: #f0fdf4; border: 1px solid #bbf7d0; }
+.biz-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+.biz-b2c .biz-label { color: #1e40af; }
+.biz-b2b .biz-label { color: #047857; }
+.biz-title { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+.biz-row { font-size: 13px; color: #475569; margin-bottom: 4px; line-height: 1.5; }
+.biz-row span { font-weight: 600; color: #0f172a; }
+
+/* Open questions */
+.oq { display: flex; flex-direction: column; gap: 8px; }
+.oq-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; }
+.oq-q { font-size: 12px; font-weight: 700; color: #f59e0b; flex-shrink: 0; margin-top: 1px; }
+.oq-text { font-size: 13px; color: #334155; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="doc-header">
+    <div class="doc-title">AI 意愿档案系统 — 产品设计文档</div>
+    <div class="doc-meta">v0.1 · 2026-04-22 · 设计阶段</div>
+    <div class="doc-tagline">「让代理决策者知道，他们做的是当事人真正想要的。」</div>
+  </div>
+
+  <!-- 1. First Principle -->
+  <div class="section">
+    <div class="section-title">第一性原理</div>
+    <div class="principle">
+      <div class="principle-label">不可再分的真命题</div>
+      <div class="principle-text">当一个人失去表达能力时，代理决策者面对的是信息真空——不是关系问题，不是法律问题。</div>
+      <div class="principle-sub">现有方案（遗嘱、公证、意定监护协议）解决的是「谁有权决定」，没有解决「应该怎么决定」。法律给了授权，但没给信息。</div>
+    </div>
+    <div class="chain">
+      <div class="chain-item">
+        <span class="chain-num">推论 1</span>
+        <span class="chain-text"><strong>产品本质是决策框架的转移。</strong>目标是把当事人的价值观和推理方式装进可检索的系统，让代理人在新情景下也能推断出「他/她会怎么选」。</span>
+      </div>
+      <div class="chain-item">
+        <span class="chain-num">推论 2</span>
+        <span class="chain-text"><strong>必须是对话，不能是表单。</strong>表单只能捕捉已知场景的答案。只有通过对话提取价值观和推理模式，才能外推到没预设过的情景。</span>
+      </div>
+      <div class="chain-item">
+        <span class="chain-num">推论 3</span>
+        <span class="chain-text"><strong>老人不需要用软件。</strong>采访者（子女或社工）是产品的操作者，老人只需要说话。这消除了最大的使用障碍。</span>
+      </div>
+      <div class="chain-item">
+        <span class="chain-num">推论 4</span>
+        <span class="chain-text"><strong>子女买的是心理许可，不是功能。</strong>「爸爸会想要这样」这句话需要有依据，代理人才能在压力下做决定而不内疚。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Users -->
+  <div class="section">
+    <div class="section-title">用户角色</div>
+    <div class="roles">
+      <div class="role-card">
+        <div class="role-icon">🎙️</div>
+        <div class="role-name">采访者</div>
+        <div class="role-desc">子女或社工。使用产品引导老人完成采访，记录回答，触发档案生成。</div>
+        <div class="role-note">付费主体（B2C：子女 / B2B：机构）</div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🧓</div>
+        <div class="role-name">当事人（老人）</div>
+        <div class="role-desc">被采访者。不需要使用任何软件，只需要在采访者引导下回答问题。</div>
+        <div class="role-note">不是产品用户，是信息来源</div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">⚖️</div>
+        <div class="role-name">决策者</div>
+        <div class="role-desc">老人失能后，需要做代理决策的人。查询档案，获取 AI 决策参考。</div>
+        <div class="role-note">通常与采访者是同一人</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Core Flow -->
+  <div class="section">
+    <div class="section-title">核心流程</div>
+    <div class="flow">
+
+      <div class="flow-step d1">
+        <div class="flow-left"><div class="flow-dot">1</div><div class="flow-line"></div></div>
+        <div class="flow-content">
+          <div class="flow-step-title">建档</div>
+          <div class="flow-step-desc">采访者创建老人档案，填写基本信息，选择采访主题（医疗 / 财务 / 日常 / 关系 / 身后事）。</div>
+          <div class="flow-step-detail">AI 根据老人背景预生成采访问题，采访者可调整。</div>
+        </div>
+      </div>
+
+      <div class="flow-step d2">
+        <div class="flow-left"><div class="flow-dot">2</div><div class="flow-line"></div></div>
+        <div class="flow-content">
+          <div class="flow-step-title">采访</div>
+          <div class="flow-step-desc">采访者坐在老人旁边，按 AI 提示逐题引导。老人的回答由采访者实时输入（文字）或录音后转写。</div>
+          <div class="flow-step-detail">每次 20–30 分钟，可分多次完成。AI 实时提示追问方向。</div>
+        </div>
+      </div>
+
+      <div class="flow-step d3">
+        <div class="flow-left"><div class="flow-dot">3</div><div class="flow-line"></div></div>
+        <div class="flow-content">
+          <div class="flow-step-title">档案生成</div>
+          <div class="flow-step-desc">AI 将对话提炼为结构化档案：价值观权重、情景偏好、核心原话引用。</div>
+          <div class="flow-step-detail">存的不是答案列表，是推理框架——「他在意什么」「他怎么权衡」。</div>
+        </div>
+      </div>
+
+      <div class="flow-step d4">
+        <div class="flow-left"><div class="flow-dot">4</div></div>
+        <div class="flow-content">
+          <div class="flow-step-title">决策查询</div>
+          <div class="flow-step-desc">老人失能后，决策者描述当前情景，AI 检索档案，输出：相关价值观 + 原话引用 + 建议方向。</div>
+          <div class="flow-step-detail">「基于他的3条核心价值观，在这个情景下，他可能会选择……」</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. MVP -->
+  <div class="section">
+    <div class="section-title">MVP 功能边界</div>
+    <div class="mvp-grid">
+      <div class="mvp-row"><span class="mvp-scope in">MVP</span><span class="mvp-text">AI 生成分主题采访问题（医疗 / 财务 / 日常 / 关系）</span></div>
+      <div class="mvp-row"><span class="mvp-scope in">MVP</span><span class="mvp-text">采访者文字输入老人回答，AI 实时提示追问</span></div>
+      <div class="mvp-row"><span class="mvp-scope in">MVP</span><span class="mvp-text">AI 生成结构化档案（价值观 + 偏好 + 原话）</span></div>
+      <div class="mvp-row"><span class="mvp-scope in">MVP</span><span class="mvp-text">决策查询：输入情景 → AI 检索档案 → 输出参考</span></div>
+      <div class="mvp-row"><span class="mvp-scope later">之后</span><span class="mvp-text">语音录入 + 自动转写（降低采访者输入负担）</span></div>
+      <div class="mvp-row"><span class="mvp-scope later">之后</span><span class="mvp-text">多人协作（多个子女共同维护同一档案）</span></div>
+      <div class="mvp-row"><span class="mvp-scope later">之后</span><span class="mvp-text">与律所 / 医院系统对接（B2B 深度集成）</span></div>
+      <div class="mvp-row"><span class="mvp-scope out">不做</span><span class="mvp-text">老人自助端（老人直接使用产品）</span></div>
+      <div class="mvp-row"><span class="mvp-scope out">不做</span><span class="mvp-text">法律文件生成（意定监护协议、遗嘱）</span></div>
+    </div>
+  </div>
+
+  <!-- 5. Biz paths -->
+  <div class="section">
+    <div class="section-title">两条商业路径</div>
+    <div class="biz">
+      <div class="biz-card biz-b2c">
+        <div class="biz-label">路径 A — B2C</div>
+        <div class="biz-title">子女直接购买</div>
+        <div class="biz-row">获客：<span>社交媒体、养老内容社区</span></div>
+        <div class="biz-row">触发：<span>父母确诊、住院、退休节点</span></div>
+        <div class="biz-row">定价：<span>¥500–1500 一次性建档</span></div>
+        <div class="biz-row">核心价值：<span>子女安心感</span></div>
+      </div>
+      <div class="biz-card biz-b2b">
+        <div class="biz-label">路径 B — B2B</div>
+        <div class="biz-title">机构订阅使用</div>
+        <div class="biz-row">客户：<span>监护服务机构、律所、养老院</span></div>
+        <div class="biz-row">触发：<span>新团体标准合规需求</span></div>
+        <div class="biz-row">定价：<span>按客户数 SaaS 订阅</span></div>
+        <div class="biz-row">核心价值：<span>社工效率 + 服务标准化</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Open questions -->
+  <div class="section">
+    <div class="section-title">待验证的关键假设</div>
+    <div class="oq">
+      <div class="oq-item"><span class="oq-q">?</span><span class="oq-text"><strong>子女愿意主导采访吗？</strong>「帮父母做这件事」的意愿有多强？还是需要社工来启动？</span></div>
+      <div class="oq-item"><span class="oq-q">?</span><span class="oq-text"><strong>老人愿意被采访吗？</strong>话题涉及失能、死亡、财产，老人的接受度如何？什么框架让他们愿意开口？</span></div>
+      <div class="oq-item"><span class="oq-q">?</span><span class="oq-text"><strong>AI 推断的可信度够吗？</strong>「基于档案，他可能会选择 X」——子女会信任这个输出，还是觉得不靠谱？</span></div>
+      <div class="oq-item"><span class="oq-q">?</span><span class="oq-text"><strong>先走 B2C 还是 B2B？</strong>B2C 验证需求更快，B2B 规模更稳。第一批用户从哪里来？</span></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

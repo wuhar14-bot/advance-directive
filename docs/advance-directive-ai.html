@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>AI-Assisted Advance Directive System</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f8fafc; padding: 32px 24px; color: #374151; }
+h1 { text-align: center; font-size: 22px; color: #1e40af; margin-bottom: 4px; }
+.subtitle { text-align: center; font-size: 13px; color: #3b82f6; margin-bottom: 32px; }
+
+.diagram { display: flex; flex-direction: column; align-items: center; gap: 0; max-width: 1100px; margin: 0 auto; }
+
+/* Two-track row */
+.tracks { display: flex; gap: 40px; width: 100%; justify-content: center; align-items: flex-start; }
+
+.track { display: flex; flex-direction: column; align-items: center; gap: 0; width: 300px; border: 1.5px dashed; border-radius: 14px; padding: 16px 16px 20px; }
+.track-a { border-color: #1e40af; background: #eff6ff; }
+.track-b { border-color: #047857; background: #f0fdf4; }
+.track-label { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 14px; align-self: flex-start; }
+.track-a .track-label { color: #1e40af; }
+.track-b .track-label { color: #047857; }
+
+/* Nodes */
+.node { border-radius: 10px; padding: 10px 14px; text-align: center; font-size: 13px; line-height: 1.5; border: 2px solid; width: 100%; }
+.node-start { background: #fed7aa; border-color: #c2410c; border-radius: 50px; font-size: 14px; font-weight: 600; }
+.node-ai { background: #ddd6fe; border-color: #6d28d9; }
+.node-archive { background: #3b82f6; border-color: #1e3a5f; color: #fff; }
+.node-team { background: #a7f3d0; border-color: #047857; }
+.node-access { background: #d1fae5; border-color: #047857; }
+
+.arrow-down { display: flex; flex-direction: column; align-items: center; margin: 4px 0; }
+.arrow-down .line { width: 2px; height: 28px; background: #94a3b8; }
+.arrow-down .head { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #94a3b8; }
+.arrow-label { font-size: 10px; color: #64748b; margin: 2px 0; }
+.note { font-size: 10px; color: #64748b; margin-top: 6px; text-align: center; }
+
+/* Merge section */
+.merge-arrows { display: flex; width: 100%; justify-content: center; align-items: flex-end; gap: 0; margin-top: 8px; }
+.merge-arm { display: flex; flex-direction: column; align-items: center; width: 300px; }
+.merge-arm .line-v { width: 2px; height: 40px; background: #94a3b8; }
+.merge-arm .line-h { height: 2px; background: #94a3b8; }
+.arm-left .line-h { width: 150px; align-self: flex-end; }
+.arm-right .line-h { width: 150px; align-self: flex-start; }
+.merge-center { display: flex; flex-direction: column; align-items: center; width: 40px; }
+.merge-center .line-v { width: 2px; height: 40px; background: #94a3b8; }
+
+.full-width { width: 100%; max-width: 640px; }
+
+.node-trigger { background: #fee2e2; border-color: #dc2626; border-width: 2.5px; font-size: 14px; font-weight: 600; }
+.node-decision { background: #fef3c7; border-color: #b45309; }
+.node-aisup { background: #ddd6fe; border-color: #6d28d9; }
+.node-proxy { background: #60a5fa; border-color: #1e3a5f; color: #fff; font-weight: 600; }
+.node-outcome { background: #a7f3d0; border-color: #047857; border-radius: 50px; font-size: 15px; font-weight: 700; border-width: 2.5px; }
+
+.quote-block { background: #f5f3ff; border-left: 3px solid #6d28d9; padding: 8px 12px; margin-top: 8px; border-radius: 0 6px 6px 0; font-size: 11px; color: #4c1d95; line-height: 1.7; text-align: left; }
+
+.center-col { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 640px; }
+</style>
+</head>
+<body>
+
+<h1>AI-Assisted Advance Directive System</h1>
+<p class="subtitle">意定监护 × AI 自我意愿存档</p>
+
+<div class="diagram">
+
+  <!-- Two parallel tracks -->
+  <div class="tracks">
+    <!-- Track A -->
+    <div class="track track-a">
+      <div class="track-label">TRACK A — 本人意愿记录</div>
+      <div class="node node-start">认知健全期老人</div>
+      <div class="arrow-down"><div class="line"></div><div class="arrow-label">AI 结构化访谈</div><div class="head"></div></div>
+      <div class="node node-ai">
+        <strong>AI 跨域访谈</strong><br>
+        医疗 · 财务 · 日常 · 关系
+      </div>
+      <div class="arrow-down"><div class="line"></div><div class="head"></div></div>
+      <div class="node node-archive">
+        <strong>意愿档案</strong><br>
+        价值观图谱 · 情景偏好矩阵<br>
+        决策逻辑 · 本人签署确认
+      </div>
+      <div class="note">加密存储 · 授权访问 · 持续更新</div>
+    </div>
+
+    <!-- Track B -->
+    <div class="track track-b">
+      <div class="track-label">TRACK B — 监护团队组建</div>
+      <div class="node node-start">监护服务机构</div>
+      <div class="arrow-down"><div class="line"></div><div class="arrow-label">按新团体标准组建</div><div class="head"></div></div>
+      <div class="node node-team">
+        <strong>三类专业人员</strong><br>
+        社会工作师<br>
+        法律工作者 · 医护工作者
+      </div>
+      <div class="arrow-down"><div class="line"></div><div class="head"></div></div>
+      <div class="node node-access">
+        <strong>获得档案访问授权</strong><br>
+        代交水电 · 代办社保 · 代决医疗
+      </div>
+    </div>
+  </div>
+
+  <!-- Converging arrows -->
+  <div class="merge-arrows">
+    <div class="merge-arm arm-left">
+      <div class="line-v"></div>
+      <div class="line-h"></div>
+    </div>
+    <div class="merge-center">
+      <div class="line-v"></div>
+    </div>
+    <div class="merge-arm arm-right">
+      <div class="line-v"></div>
+      <div class="line-h"></div>
+    </div>
+  </div>
+
+  <!-- Merge point downward -->
+  <div class="center-col">
+    <div class="arrow-down"><div class="head"></div></div>
+
+    <div class="node node-trigger full-width">
+      认知衰退 / 失能触发<br>
+      <span style="font-size:12px;font-weight:400">医疗评估确认 · 监护权正式启动</span>
+    </div>
+
+    <div class="arrow-down"><div class="line"></div><div class="head"></div></div>
+
+    <div class="node node-decision full-width">
+      <strong>监护人面临具体决策</strong><br>
+      医疗处置 · 财务安排 · 居住照护
+    </div>
+
+    <div class="arrow-down"><div class="line"></div><div class="arrow-label">AI 检索档案 · 匹配情景 · 提取偏好</div><div class="head"></div></div>
+
+    <div class="node node-aisup full-width">
+      <strong>AI 辅助决策支持</strong>
+      <div class="quote-block">
+        「本人曾表达：我不希望过度抢救」<br>
+        「在类似情景下偏好：居家安宁」<br>
+        「其核心价值观：家人陪伴优先于延命」<br>
+        「建议决策方向：签署 DNR」
+      </div>
+    </div>
+
+    <div class="arrow-down"><div class="line"></div><div class="arrow-label">监护团队审议确认</div><div class="head"></div></div>
+
+    <div class="node node-proxy full-width">
+      代理决策 · 决策内容与依据留档
+    </div>
+
+    <div class="arrow-down"><div class="line"></div><div class="head"></div></div>
+
+    <div class="node node-outcome full-width">
+      决策符合本人真实意愿 · 尊严得到保障
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
