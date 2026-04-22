@@ -8,6 +8,7 @@ import { QuestionCard } from "@/components/QuestionCard";
 import { ProbePanel } from "@/components/ProbePanel";
 import { Button } from "@/components/ui/button";
 import { useSessionStore } from "@/lib/store";
+import { AppHeader } from "@/components/AppHeader";
 import { DomainKey, SessionData, Turn } from "@/lib/types";
 
 interface Question {
@@ -22,19 +23,6 @@ function LoadingSkeleton() {
       <div className="h-32 bg-stone-200 rounded" />
       <div className="h-10 bg-stone-200 rounded w-1/3" />
     </div>
-  );
-}
-
-function AppHeader({ personName }: { personName?: string }) {
-  return (
-    <header className="h-14 flex items-center px-6 border-b border-stone-200 bg-white shrink-0">
-      <span className="text-sm font-medium text-stone-700">
-        AI Advance Directive
-        {personName && (
-          <span className="text-stone-400 ml-2">— {personName}</span>
-        )}
-      </span>
-    </header>
   );
 }
 
