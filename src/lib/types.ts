@@ -46,6 +46,34 @@ export interface Archive {
   rawSummary: string;
 }
 
+export interface QueryRelevantValue {
+  valueLabel: string;
+  relevance: string;
+  archiveEvidence: string;
+}
+
+export interface QueryKeyQuote {
+  quoteId: string;
+  quoteText: string;
+  applicationToScenario: string;
+}
+
+export interface QueryResponse {
+  relevantValues: QueryRelevantValue[];
+  keyQuotes: QueryKeyQuote[];
+  suggestedDirection: string;
+  hedgedLanguage: string;
+  insufficientInfo: string;
+  summary: string;
+}
+
+export interface QueryEntry {
+  id: string;
+  scenario: string;
+  response: QueryResponse;
+  timestamp: string;
+}
+
 export interface SessionData {
   id: string;
   createdAt: string;

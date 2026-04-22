@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { SessionData, DomainKey, DomainStatus, Turn } from "./types";
+import { SessionData, DomainKey, DomainStatus, Turn, Archive } from "./types";
 
 const DOMAIN_KEYS: DomainKey[] = [
   "medical",
@@ -36,6 +36,7 @@ interface SessionStore {
     questionId: string,
     probes: string[]
   ) => void;
+  setArchive: (archive: Archive) => void;
 }
 
 export const useSessionStore = create<SessionStore>()(
@@ -144,6 +145,19 @@ export const useSessionStore = create<SessionStore>()(
             ...session,
             transcript: { ...session.transcript, [domain]: updated },
           },
+        });
+      },
+
+      setArchive: (archive) => {
+        const { session } = get();
+        if (!session) return;
+        set({
+          session: {
+            ...session,
+            archive,
+            archiveGeneratedAt: new Date().toISOString(),
+          },
+          lastSavedAt: new Date().toISOString(),
         });
       },
     }),

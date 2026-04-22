@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useSessionStore } from "@/lib/store";
 import { AppHeader } from "@/components/AppHeader";
 import { DomainKey, SessionData, Turn } from "@/lib/types";
+import { Loader2, FileText } from "lucide-react";
 
 interface Question {
   id: string;
@@ -43,6 +44,7 @@ export default function InterviewPage() {
     setCurrentDomain,
     setCurrentQuestionIndex,
     addFollowUpProbes,
+    setArchive,
   } = useSessionStore();
 
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -52,6 +54,7 @@ export default function InterviewPage() {
   const [probesLoading, setProbesLoading] = useState(false);
   const [probesError, setProbesError] = useState(false);
   const [selectedProbe, setSelectedProbe] = useState("");
+  const [archiveGenerating, setArchiveGenerating] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -156,18 +159,22 @@ export default function InterviewPage() {
     if (!currentQuestion) return;
     if (currentIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentIndex + 1);
+      // Fire probe generation async — does NOT block navigation
+      const turns = session!.transcript[currentDomain] ?? [];
+      fetchProbes(currentDomain, currentQuestion.id, currentQuestion.text, currentAnswer, turns);
     } else {
+      // Last question — mark complete then advance to next pending domain
       setDomainStatus(currentDomain, "complete");
+      const currentIdx = DOMAIN_ORDER.indexOf(currentDomain);
+      for (let i = currentIdx + 1; i < DOMAIN_ORDER.length; i++) {
+        const next = DOMAIN_ORDER[i];
+        if (session!.domainStatus[next] !== "skipped" && session!.domainStatus[next] !== "complete") {
+          handleSelectDomain(next);
+          return;
+        }
+      }
+      // All domains done — stay on page, "生成档案" button will be enabled
     }
-    // Fire probe generation async — does NOT block navigation
-    const turns = session!.transcript[currentDomain] ?? [];
-    fetchProbes(
-      currentDomain,
-      currentQuestion.id,
-      currentQuestion.text,
-      currentAnswer,
-      turns
-    );
   }
 
   function handlePrevious() {
@@ -202,6 +209,32 @@ export default function InterviewPage() {
     }
   }
 
+  async function handleGenerateArchive() {
+    if (!session) return;
+    setArchiveGenerating(true);
+    try {
+      const res = await fetch("/api/archive/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript: session.transcript, person: session.person }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (data.archive) {
+        setArchive(data.archive);
+        router.push("/archive");
+      }
+    } catch {
+      // silently fail — user can retry
+    } finally {
+      setArchiveGenerating(false);
+    }
+  }
+
+  const hasAnyComplete = Object.values(session?.domainStatus ?? {}).some(
+    (s) => s === "complete"
+  );
+
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-stone-50">
       <AppHeader personName={session.person.name} />
@@ -214,6 +247,31 @@ export default function InterviewPage() {
             onSelectDomain={handleSelectDomain}
             onSkipDomain={handleSkipDomain}
           />
+          <div className="mt-auto pt-4">
+            <Button
+              className="w-full gap-2 bg-sky-500 hover:bg-sky-600 text-white"
+              disabled={!hasAnyComplete || archiveGenerating}
+              onClick={handleGenerateArchive}
+              aria-busy={archiveGenerating}
+            >
+              {archiveGenerating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  生成中...
+                </>
+              ) : (
+                <>
+                  <FileText className="w-4 h-4" />
+                  生成档案
+                </>
+              )}
+            </Button>
+            {!hasAnyComplete && (
+              <p className="text-xs text-stone-400 text-center mt-2">
+                完成至少一个领域后可生成
+              </p>
+            )}
+          </div>
         </aside>
 
         {/* Main */}

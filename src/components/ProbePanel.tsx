@@ -15,6 +15,7 @@ interface ProbePanelProps {
   isLoading: boolean;
   hasError: boolean;
   onProbeClick: (probe: string) => void;
+  onFollowUpAnswer?: (probe: string, answer: string) => void;
 }
 
 export function ProbePanel({
@@ -22,14 +23,22 @@ export function ProbePanel({
   isLoading,
   hasError,
   onProbeClick,
+  onFollowUpAnswer,
 }: ProbePanelProps) {
   const [usedProbes, setUsedProbes] = useState<Set<string>>(new Set());
   const [selectedProbe, setSelectedProbe] = useState("");
+  const [followUpAnswer, setFollowUpAnswer] = useState("");
 
   function handleProbeClick(probe: string) {
     setUsedProbes((prev) => new Set(prev).add(probe));
     setSelectedProbe(probe);
+    setFollowUpAnswer("");
     onProbeClick(probe);
+  }
+
+  function handleAnswerChange(value: string) {
+    setFollowUpAnswer(value);
+    if (selectedProbe) onFollowUpAnswer?.(selectedProbe, value);
   }
 
   return (
@@ -82,16 +91,27 @@ export function ProbePanel({
             </p>
           )}
 
-          <div className="mt-3">
-            <label className="text-sm text-stone-500 mb-1 block">
-              追问提示
-            </label>
-            <Textarea
-              readOnly
-              placeholder="点击上方建议，或自行输入追问内容"
-              className="text-sm"
-              value={selectedProbe}
-            />
+          <div className="mt-3 space-y-3">
+            <div>
+              <label className="text-sm text-stone-500 mb-1 block">追问提示</label>
+              <Textarea
+                readOnly
+                placeholder="点击上方建议，或自行输入追问内容"
+                className="text-sm bg-stone-50"
+                value={selectedProbe}
+              />
+            </div>
+            {selectedProbe && (
+              <div>
+                <label className="text-sm text-stone-500 mb-1 block">追问回答</label>
+                <Textarea
+                  placeholder="在此记录老人对追问的回答…"
+                  className="text-sm"
+                  value={followUpAnswer}
+                  onChange={(e) => handleAnswerChange(e.target.value)}
+                />
+              </div>
+            )}
           </div>
         </AccordionContent>
       </AccordionItem>

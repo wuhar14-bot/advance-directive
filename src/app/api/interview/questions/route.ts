@@ -25,9 +25,8 @@ export async function POST(req: NextRequest) {
       : ''
 
     const completion = await client.chat.completions.create({
-      model: 'kimi-k2.6',
+      model: 'moonshot-v1-8k',
       max_tokens: 600,
-      temperature: 0.4,
       messages: [
         {
           role: 'system',
@@ -51,8 +50,10 @@ export async function POST(req: NextRequest) {
     })
 
     const text = completion.choices[0]?.message?.content ?? ''
-    const raw = text.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '')
-    const questions = JSON.parse(raw)
+    // Extract JSON array from response — handle markdown fences and reasoning preamble
+    const match = text.match(/\[[\s\S]*\]/)
+    if (!match) throw new Error('No JSON array found in response')
+    const questions = JSON.parse(match[0])
 
     return NextResponse.json({ questions })
   } catch (err: unknown) {
