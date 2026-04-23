@@ -1,6 +1,12 @@
 export type DomainKey = "medical" | "financial" | "daily" | "relationships" | "end-of-life";
 export type DomainStatus = "not-started" | "in-progress" | "complete" | "skipped";
 
+export interface Question {
+  id: string;
+  text: string;
+  options: string[];
+}
+
 export interface Turn {
   questionId: string;
   questionText: string;

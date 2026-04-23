@@ -3,9 +3,10 @@
 ## Phases
 
 - [x] **Phase 1: Foundation + Interview Flow** - Working Next.js app with session setup and full guided interview UI (completed 2026-04-22)
-- [ ] **Phase 2: Archive Generation** - AI distills interview into structured, citable archive
-- [ ] **Phase 3: Decision Query** - Guardian queries archive and receives grounded, cited guidance
-- [ ] **Phase 4: Polish + Deploy** - Vercel deployment, UX hardening, end-to-end validation
+- [x] **Phase 2: Archive Generation** - AI distills interview into structured, citable archive (completed 2026-04-22)
+- [x] **Phase 3: Decision Query** - Guardian queries archive and receives grounded, cited guidance (completed 2026-04-22)
+- [x] **Phase 4: Polish + Deploy** - Vercel deployment, UX hardening, end-to-end validation (completed 2026-04-22)
+- [ ] **Phase 5: Multiple-Choice Interview UX** - Replace free-text-only answers with AI-generated options + "其他" custom input
 
 ---
 
@@ -65,6 +66,23 @@ Plans:
   4. A complete end-to-end run (session → interview → archive → query) completes without errors
 **Plans**: TBD
 
+### Phase 5: Multiple-Choice Interview UX
+**Goal**: Interview questions present AI-generated answer options instead of blank text boxes, reducing friction and making the experience feel like a guided conversation
+**Depends on**: Phase 1 (interview flow)
+**Requirements**: INT-01, INT-02, INT-03 (enhanced)
+**Success Criteria** (what must be TRUE):
+  1. Each interview question displays 3-4 predefined answer options as selectable cards/chips
+  2. Selecting an option fills the answer and enables the "下一题" button immediately
+  3. An "其他" (Other) option at the bottom reveals a text input for custom free-text answers
+  4. The AI question generation API returns options alongside each question
+  5. Selected option text (or custom text) is stored in the same transcript format as before — archive generation and query work unchanged
+**Plans**: 2 plans
+**UI hint**: yes
+
+Plans:
+- [ ] 05-01-PLAN.md — API: extend question generation to return options per question
+- [ ] 05-02-PLAN.md — UI: QuestionCard multiple-choice layout with "其他" escape hatch
+
 ---
 
 ## Progress
@@ -72,6 +90,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation + Interview Flow | 4/4 | Complete   | 2026-04-22 |
-| 2. Archive Generation | 0/2 | Not started | - |
-| 3. Decision Query | 0/2 | Not started | - |
-| 4. Polish + Deploy | 0/1 | Not started | - |
+| 2. Archive Generation | 1/1 | Complete | 2026-04-22 |
+| 3. Decision Query | 1/1 | Complete | 2026-04-22 |
+| 4. Polish + Deploy | 1/1 | Complete | 2026-04-22 |
+| 5. Multiple-Choice Interview UX | 0/2 | Not started | - |

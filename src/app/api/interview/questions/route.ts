@@ -16,6 +16,8 @@ const DOMAIN_CONTEXT: Record<string, string> = {
   "end-of-life": "临终价值观、对死亡和临终的态度、遗产、最后的心愿",
 }
 
+const OTHER_OPTION = "以上都不太符合，我想说…"
+
 export async function POST(req: NextRequest) {
   try {
     const { domain, person, completedDomains } = await req.json()
@@ -26,15 +28,21 @@ export async function POST(req: NextRequest) {
 
     const completion = await client.chat.completions.create({
       model: 'moonshot-v1-8k',
-      max_tokens: 600,
+      max_tokens: 1200,
       messages: [
         {
           role: 'system',
-          content: `你是一位帮助采访者记录老人价值观和意愿的专业访谈助手，用于制作意定监护档案。你的任务是生成温暖、开放式的访谈问题，引导老人讲述故事和表达想法——不要是非题。问题应像关心的家人在聊天，而不是医疗表格。请为指定领域生成恰好4个问题，用中文回答。`
+          content: `你是一位帮助采访者记录老人价值观和意愿的专业访谈助手，用于制作意定监护档案。你的任务是生成温暖的访谈问题，每个问题附带3个常见回答选项，帮助老人更容易表达想法。
+
+选项要求：
+- 每个选项是老人的第一人称表述，简洁自然（15-30字）
+- 3个选项应覆盖不同倾向（如积极/保守/中立），不要重复
+- 选项语气要像老人说话，口语化，不要书面语
+- 不需要包含"其他"选项，系统会自动添加`
         },
         {
           role: 'user',
-          content: `为"${domain}"领域（${DOMAIN_CONTEXT[domain] ?? domain}）生成4个访谈问题。
+          content: `为"${domain}"领域（${DOMAIN_CONTEXT[domain] ?? domain}）生成4个访谈问题，每个问题带3个选项。
 
 受访者信息：
 - 姓名：${person.name}
@@ -42,7 +50,7 @@ export async function POST(req: NextRequest) {
 - 背景：${person.backgroundNotes}${completedContext}
 
 只返回JSON数组，格式如下：
-[{"id": "q1", "text": "..."}, {"id": "q2", "text": "..."}, {"id": "q3", "text": "..."}, {"id": "q4", "text": "..."}]
+[{"id": "q1", "text": "问题内容", "options": ["选项A", "选项B", "选项C"]}, ...]
 
 不要其他文字，不要markdown，只返回JSON数组。`
         }
@@ -50,12 +58,19 @@ export async function POST(req: NextRequest) {
     })
 
     const text = completion.choices[0]?.message?.content ?? ''
-    // Extract JSON array from response — handle markdown fences and reasoning preamble
     const match = text.match(/\[[\s\S]*\]/)
     if (!match) throw new Error('No JSON array found in response')
     const questions = JSON.parse(match[0])
 
-    return NextResponse.json({ questions })
+    const normalized = questions.map((q: { id: string; text: string; options?: string[] }) => ({
+      id: q.id,
+      text: q.text,
+      options: Array.isArray(q.options) && q.options.length > 0
+        ? [...q.options, OTHER_OPTION]
+        : [OTHER_OPTION],
+    }))
+
+    return NextResponse.json({ questions: normalized })
   } catch (err: unknown) {
     const status = (err as { status?: number }).status
     if (status === 429) {

@@ -9,13 +9,8 @@ import { ProbePanel } from "@/components/ProbePanel";
 import { Button } from "@/components/ui/button";
 import { useSessionStore } from "@/lib/store";
 import { AppHeader } from "@/components/AppHeader";
-import { DomainKey, SessionData, Turn } from "@/lib/types";
+import { DomainKey, Question, SessionData, Turn } from "@/lib/types";
 import { Loader2, FileText } from "lucide-react";
-
-interface Question {
-  id: string;
-  text: string;
-}
 
 function LoadingSkeleton() {
   return (
@@ -304,6 +299,7 @@ export default function InterviewPage() {
                 <QuestionCard
                   questionId={currentQuestion.id}
                   questionText={currentQuestion.text}
+                  options={currentQuestion.options ?? []}
                   answer={currentAnswer}
                   onAnswerChange={handleAnswerChange}
                   onNext={handleNext}
