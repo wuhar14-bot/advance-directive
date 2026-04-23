@@ -1,7 +1,7 @@
 import OpenAI from 'openai'
 import { NextRequest, NextResponse } from 'next/server'
 
-export const maxDuration = 30
+export const maxDuration = 60
 
 const client = new OpenAI({
   apiKey: process.env.KIMI_API_KEY,
@@ -57,7 +57,8 @@ export async function POST(req: NextRequest) {
       ]
     })
 
-    const text = completion.choices[0]?.message?.content ?? ''
+    const raw = completion.choices[0]?.message?.content ?? ''
+    const text = raw.replace(/```(?:json)?\s*/g, '').replace(/```/g, '')
     const match = text.match(/\[[\s\S]*\]/)
     if (!match) throw new Error('No JSON array found in response')
     const questions = JSON.parse(match[0])
