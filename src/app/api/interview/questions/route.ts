@@ -61,7 +61,8 @@ export async function POST(req: NextRequest) {
     const text = raw.replace(/```(?:json)?\s*/g, '').replace(/```/g, '')
     const match = text.match(/\[[\s\S]*\]/)
     if (!match) throw new Error('No JSON array found in response')
-    const questions = JSON.parse(match[0])
+    const cleaned = match[0].replace(/,\s*([}\]])/g, '$1')
+    const questions = JSON.parse(cleaned)
 
     const normalized = questions.map((q: { id: string; text: string; options?: string[] }) => ({
       id: q.id,
