@@ -50,6 +50,7 @@ export default function InterviewPage() {
   const [probesError, setProbesError] = useState(false);
   const [selectedProbe, setSelectedProbe] = useState("");
   const [archiveGenerating, setArchiveGenerating] = useState(false);
+  const [archiveError, setArchiveError] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -207,6 +208,7 @@ export default function InterviewPage() {
   async function handleGenerateArchive() {
     if (!session) return;
     setArchiveGenerating(true);
+    setArchiveError(false);
     try {
       const res = await fetch("/api/archive/generate", {
         method: "POST",
@@ -220,7 +222,7 @@ export default function InterviewPage() {
         router.push("/archive");
       }
     } catch {
-      // silently fail — user can retry
+      setArchiveError(true);
     } finally {
       setArchiveGenerating(false);
     }
@@ -266,6 +268,11 @@ export default function InterviewPage() {
                 完成至少一个领域后可生成
               </p>
             )}
+            {archiveError && (
+              <p className="text-xs text-red-500 text-center mt-2">
+                生成失败，请重试
+              </p>
+            )}
           </div>
         </aside>
 
@@ -292,7 +299,7 @@ export default function InterviewPage() {
                   重试
                 </Button>
               </div>
-            ) : questionsLoading || questions.length === 0 ? (
+            ) : questionsLoading || questions.length === 0 || !currentQuestion ? (
               <LoadingSkeleton />
             ) : (
               <>

@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import { NextRequest, NextResponse } from 'next/server'
+import { OTHER_OPTION } from '@/lib/types'
 
 export const maxDuration = 60
 
@@ -16,7 +17,6 @@ const DOMAIN_CONTEXT: Record<string, string> = {
   "end-of-life": "临终价值观、对死亡和临终的态度、遗产、最后的心愿",
 }
 
-const OTHER_OPTION = "以上都不太符合，我想说…"
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 
     const completion = await client.chat.completions.create({
       model: 'moonshot-v1-8k',
-      max_tokens: 1200,
+      max_tokens: 2000,
       messages: [
         {
           role: 'system',
@@ -58,19 +58,45 @@ export async function POST(req: NextRequest) {
     })
 
     const raw = completion.choices[0]?.message?.content ?? ''
-    const text = raw.replace(/```(?:json)?\s*/g, '').replace(/```/g, '')
-    const match = text.match(/\[[\s\S]*\]/)
-    if (!match) throw new Error('No JSON array found in response')
-    const cleaned = match[0].replace(/,\s*([}\]])/g, '$1')
-    const questions = JSON.parse(cleaned)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[questions raw]', raw.substring(0, 500))
+    }
+    const text = raw.replace(/```(?:json)?\s*/g, '').replace(/```/g, '').trim()
 
-    const normalized = questions.map((q: { id: string; text: string; options?: string[] }) => ({
-      id: q.id,
-      text: q.text,
-      options: Array.isArray(q.options) && q.options.length > 0
-        ? [...q.options, OTHER_OPTION]
-        : [OTHER_OPTION],
-    }))
+    let questions
+    try {
+      questions = JSON.parse(text)
+    } catch {
+      const cleaned = text.replace(/,\s*([}\]])/g, '$1')
+      try {
+        questions = JSON.parse(cleaned)
+      } catch {
+        // Truncated response — try to salvage by closing open brackets
+        let salvage = cleaned.replace(/,\s*$/, '')
+        const openBraces = (salvage.match(/{/g) || []).length
+        const closeBraces = (salvage.match(/}/g) || []).length
+        const openBrackets = (salvage.match(/\[/g) || []).length
+        const closeBrackets = (salvage.match(/\]/g) || []).length
+        // Close any unclosed strings
+        const quoteCount = (salvage.match(/"/g) || []).length
+        if (quoteCount % 2 !== 0) salvage += '"'
+        for (let i = 0; i < openBraces - closeBraces; i++) salvage += '}'
+        for (let i = 0; i < openBrackets - closeBrackets; i++) salvage += ']'
+        // Remove trailing comma before closing brackets
+        salvage = salvage.replace(/,\s*([}\]])/g, '$1')
+        questions = JSON.parse(salvage)
+      }
+    }
+
+    const normalized = questions
+      .filter((q: { id?: string; text?: string }) => q.id && q.text)
+      .map((q: { id: string; text: string; options?: string[] }) => ({
+        id: q.id,
+        text: q.text,
+        options: Array.isArray(q.options) && q.options.length > 0
+          ? [...q.options, OTHER_OPTION]
+          : [OTHER_OPTION],
+      }))
 
     return NextResponse.json({ questions: normalized })
   } catch (err: unknown) {

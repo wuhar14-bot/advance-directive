@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-const OTHER_OPTION = "以上都不太符合，我想说…";
+import { OTHER_OPTION } from "@/lib/types";
 
 interface QuestionCardProps {
   questionId: string;
@@ -85,6 +85,20 @@ export function QuestionCard({
     onNext();
   }
 
+  function handleRadioKeyDown(e: React.KeyboardEvent) {
+    const radios = (e.currentTarget as HTMLElement).querySelectorAll('[role="radio"]');
+    const current = Array.from(radios).indexOf(document.activeElement as Element);
+    if (current < 0) return;
+    let next = current;
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+      next = (current + 1) % radios.length;
+    } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+      next = (current - 1 + radios.length) % radios.length;
+    } else return;
+    e.preventDefault();
+    (radios[next] as HTMLElement).focus();
+  }
+
   const hasOptions = selectableOptions.length > 0;
 
   return (
@@ -98,12 +112,12 @@ export function QuestionCard({
         </p>
 
         {hasOptions ? (
-          <div role="radiogroup" aria-label="回答选项" className="space-y-3 mb-4">
+          <div role="radiogroup" aria-label="回答选项" className="space-y-3 mb-4" onKeyDown={handleRadioKeyDown}>
             {selectableOptions.map((option, i) => {
               const isSelected = !isCustomMode && answer === option;
               return (
                 <button
-                  key={i}
+                  key={option}
                   role="radio"
                   aria-checked={isSelected}
                   onClick={() => handleSelectOption(option)}

@@ -1,6 +1,8 @@
 export type DomainKey = "medical" | "financial" | "daily" | "relationships" | "end-of-life";
 export type DomainStatus = "not-started" | "in-progress" | "complete" | "skipped";
 
+export const OTHER_OPTION = "以上都不太符合，我想说…";
+
 export interface Question {
   id: string;
   text: string;
